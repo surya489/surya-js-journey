@@ -1,8 +1,13 @@
+import Link from "next/link";
+
 import { ConceptCard } from "@/components/concept/ConceptCard";
 import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
-import { concepts } from "@/concepts/data";
+import { getAllChallenges } from "@/lib/challenges";
+import { getAllConcepts } from "@/lib/concepts";
 
 export default function Home() {
+  const concepts = getAllConcepts();
+  const challenges = getAllChallenges();
   const featuredConcepts = concepts.slice(0, 3);
 
   return (
@@ -26,9 +31,9 @@ export default function Home() {
 
             <div className="grid gap-3 rounded-[1.5rem] border border-border bg-surface-strong p-5 text-sm text-muted xl:min-w-80">
               <p className="font-semibold text-foreground">What you can do</p>
-              <p>Browse curated JavaScript concepts</p>
-              <p>Open focused concept pages with code examples</p>
-              <p>Prepare for interactive practice and challenges</p>
+              <p>{concepts.length} concepts across focused JavaScript topics</p>
+              <p>{challenges.length} challenge flows with validation</p>
+              <p>Guided visualizer, playground, and concept deep-dives</p>
             </div>
           </div>
         </section>
@@ -60,6 +65,22 @@ export default function Home() {
                   execution, and output-driven learning.
                 </p>
               </div>
+              <div className="rounded-[1.25rem] bg-background/70 p-4">
+                <p className="text-sm font-semibold text-foreground">
+                  Challenges
+                </p>
+                <p className="mt-2 text-sm leading-7 text-muted">
+                  Solve practical exercises with hints, validation, and linked concepts.
+                </p>
+              </div>
+              <div className="rounded-[1.25rem] bg-background/70 p-4">
+                <p className="text-sm font-semibold text-foreground">
+                  Visualizer
+                </p>
+                <p className="mt-2 text-sm leading-7 text-muted">
+                  Step through event loop scenarios with queue-by-queue feedback.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -72,6 +93,44 @@ export default function Home() {
               <li>Interactive examples and playground-based exploration</li>
               <li>Challenge-driven practice for interview preparation</li>
             </ul>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href="/concepts"
+                className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white"
+              >
+                Explore Concepts
+              </Link>
+              <Link
+                href="/visualizer"
+                className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-amber-50"
+              >
+                Open Visualizer
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-5 md:grid-cols-3">
+          <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
+            <p className="text-sm font-semibold text-foreground">Concept Library</p>
+            <p className="mt-3 text-3xl font-black text-accent">{concepts.length}</p>
+            <p className="mt-2 text-sm leading-7 text-muted">
+              Functions, async behavior, runtime internals, and performance patterns.
+            </p>
+          </div>
+          <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
+            <p className="text-sm font-semibold text-foreground">Challenge Bank</p>
+            <p className="mt-3 text-3xl font-black text-accent">{challenges.length}</p>
+            <p className="mt-2 text-sm leading-7 text-muted">
+              Practical exercises with hints, validation, and linked concept review.
+            </p>
+          </div>
+          <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
+            <p className="text-sm font-semibold text-foreground">Interactive Modes</p>
+            <p className="mt-3 text-3xl font-black text-accent">3</p>
+            <p className="mt-2 text-sm leading-7 text-muted">
+              Playground practice, challenge solving, and visual execution walkthroughs.
+            </p>
           </div>
         </section>
 

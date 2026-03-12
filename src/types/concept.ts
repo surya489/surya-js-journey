@@ -9,8 +9,13 @@ export type ConceptCategory =
 export type Concept = {
   slug: string;
   title: string;
+  summary: string;
   description: string;
-  exampleCode: string;
   difficulty: ConceptDifficulty;
   category: ConceptCategory;
+  keyPoints: string[];
+  commonMistakes: string[];
+  expectedOutput: string[];
+  relatedConcepts: string[];
+  exampleCode: string;
 };

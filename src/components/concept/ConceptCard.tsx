@@ -26,12 +26,14 @@ export function ConceptCard({ concept }: ConceptCardProps) {
         </span>
       </div>
 
-      <p className="mt-4 text-sm leading-7 text-muted">{concept.description}</p>
+      <p className="mt-4 text-sm leading-7 text-muted">{concept.summary}</p>
 
-      <div className="mt-5 flex items-center justify-between text-sm font-semibold text-foreground">
-        <span>Open concept</span>
-        <span className="transition-transform duration-200 group-hover:translate-x-1">
-          →
+      <div className="mt-5 flex items-center justify-between gap-4">
+        <span className="line-clamp-1 text-xs text-muted">
+          {concept.keyPoints[0]}
+        </span>
+        <span className="text-sm font-semibold text-foreground transition-transform duration-200 group-hover:translate-x-1">
+          Open concept →
         </span>
       </div>
     </Link>

@@ -1,13 +1,21 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/concepts", label: "Concepts" },
   { href: "/playground", label: "Playground" },
   { href: "/challenges", label: "Challenges" },
+  { href: "/visualizer", label: "Visualizer" },
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
+
   return (
     <header className="rounded-[1.75rem] border border-border bg-surface px-5 py-4 shadow-[var(--shadow)] backdrop-blur">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -20,17 +28,24 @@ export function Navbar() {
           </h1>
         </div>
 
-        <nav className="flex flex-wrap gap-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-full border border-border bg-surface-strong px-4 py-2 text-sm font-semibold text-muted transition-colors hover:border-accent/30 hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex flex-col gap-3 md:items-end">
+          <nav className="flex flex-wrap gap-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                  pathname === item.href
+                    ? "border-accent bg-accent text-white"
+                    : "border-border bg-surface-strong text-muted hover:border-accent/30 hover:text-foreground"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

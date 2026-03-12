@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import type { Concept } from "@/types/concept";
 
@@ -7,6 +10,8 @@ type SidebarProps = {
 };
 
 export function Sidebar({ concepts }: SidebarProps) {
+  const pathname = usePathname();
+
   return (
     <aside className="rounded-[1.75rem] border border-border bg-surface p-5 shadow-[var(--shadow)] backdrop-blur">
       <div className="border-b border-border pb-4">
@@ -22,12 +27,16 @@ export function Sidebar({ concepts }: SidebarProps) {
         </p>
       </div>
 
-      <div className="mt-5 space-y-3">
+      <div className="mt-5 flex gap-3 overflow-x-auto pb-1 xl:block xl:space-y-3 xl:overflow-visible">
         {concepts.map((concept) => (
           <Link
             key={concept.slug}
             href={`/concepts/${concept.slug}`}
-            className="block rounded-[1.25rem] border border-border bg-surface-strong px-4 py-3 transition-colors hover:border-accent/30"
+            className={`block min-w-64 rounded-[1.25rem] border px-4 py-3 transition-colors xl:min-w-0 ${
+              pathname === `/concepts/${concept.slug}`
+                ? "border-accent bg-accent/10"
+                : "border-border bg-surface-strong hover:border-accent/30"
+            }`}
           >
             <div className="flex items-center justify-between gap-3">
               <div>
