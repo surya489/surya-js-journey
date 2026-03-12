@@ -41,12 +41,12 @@ export default async function ConceptPage({ params }: ConceptPageProps) {
             <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
               {concept.category}
             </span>
-            <span className="rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-background">
+            <span className="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-foreground">
               {concept.difficulty}
             </span>
           </div>
           <div>
-            <h2 className="text-4xl font-black tracking-tight text-foreground">
+            <h2 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
               {concept.title}
             </h2>
             <p className="mt-3 max-w-3xl text-lg leading-8 text-foreground/80">
@@ -58,7 +58,7 @@ export default async function ConceptPage({ params }: ConceptPageProps) {
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
+        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-6">
             <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
               <p className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
@@ -167,11 +167,11 @@ export default async function ConceptPage({ params }: ConceptPageProps) {
             ) : null}
 
             {concept.slug === "event-loop" ? (
-              <div className="rounded-[1.5rem] border border-border bg-foreground p-5 text-background">
+              <div className="inverse-surface rounded-[1.5rem] border border-border p-5">
                 <p className="text-xs font-semibold tracking-[0.24em] uppercase text-amber-300">
                   Visual Learning
                 </p>
-                <p className="mt-3 text-sm leading-7 text-amber-50/80">
+                <p className="inverse-muted mt-3 text-sm leading-7">
                   Open the guided event loop visualizer to see the call stack,
                   microtasks, and macrotasks change step by step.
                 </p>

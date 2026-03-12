@@ -1,17 +1,40 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ChallengeCard } from "@/components/challenge/ChallengeCard";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import type { Challenge } from "@/types/challenge";
 
 type ChallengeSearchProps = {
   challenges: Challenge[];
 };
 
+const PAGE_SIZE = 4;
+
+function PaginationArrow({ direction }: { direction: "left" | "right" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4 fill-none stroke-current"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {direction === "left" ? (
+        <path d="m15 6-6 6 6 6" />
+      ) : (
+        <path d="m9 6 6 6-6 6" />
+      )}
+    </svg>
+  );
+}
+
 export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState("All");
+  const [page, setPage] = useState(1);
 
   const filteredChallenges = useMemo(() => {
     return challenges.filter((challenge) => {
@@ -30,6 +53,23 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
     });
   }, [challenges, difficulty, query]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [query, difficulty]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredChallenges.length / PAGE_SIZE));
+  const paginatedChallenges = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredChallenges.slice(start, start + PAGE_SIZE);
+  }, [filteredChallenges, page]);
+
+  const difficultyOptions = [
+    { label: "All", value: "All" },
+    { label: "Beginner", value: "Beginner" },
+    { label: "Intermediate", value: "Intermediate" },
+    { label: "Advanced", value: "Advanced" },
+  ];
+
   return (
     <div className="space-y-5">
       <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
@@ -38,29 +78,40 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
             <span className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
               Search Challenges
             </span>
-            <input
-              type="text"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search by title or prompt"
-              className="mt-4 w-full rounded-[1.1rem] border border-border bg-background/70 px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted focus:border-accent/40"
-            />
+            <div className="control-surface mt-4 flex items-center gap-3 rounded-[1.15rem] border border-border px-4 py-3.5 text-sm text-muted transition-all duration-300 focus-within:border-accent/45 focus-within:shadow-[0_14px_30px_rgba(217,119,6,0.12)]">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4 fill-none stroke-current text-accent"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="6.5" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <input
+                type="text"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search by title or prompt"
+                className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+              />
+            </div>
           </label>
 
           <label className="block">
             <span className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
               Difficulty
             </span>
-            <select
-              value={difficulty}
-              onChange={(event) => setDifficulty(event.target.value)}
-              className="mt-4 w-full rounded-[1.1rem] border border-border bg-background/70 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-accent/40"
-            >
-              <option value="All">All</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
+            <div className="mt-4">
+              <CustomSelect
+                value={difficulty}
+                onChange={setDifficulty}
+                options={difficultyOptions}
+                ariaLabel="Filter challenges by difficulty"
+              />
+            </div>
           </label>
         </div>
 
@@ -70,7 +121,7 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
       </div>
 
       {filteredChallenges.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-[1.25rem] border border-border bg-surface-strong p-4">
             <p className="text-sm font-semibold text-foreground">Visible Challenges</p>
             <p className="mt-2 text-3xl font-black text-accent">
@@ -93,11 +144,56 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
         </div>
       ) : null}
 
-      <div className="grid gap-5 xl:grid-cols-3">
-        {filteredChallenges.map((challenge) => (
+      <div className="grid gap-5 lg:grid-cols-2">
+        {paginatedChallenges.map((challenge) => (
           <ChallengeCard key={challenge.slug} challenge={challenge} />
         ))}
       </div>
+
+      {filteredChallenges.length > 0 ? (
+        <div className="flex flex-col gap-4 rounded-[1.5rem] border border-border bg-surface-strong p-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted">
+            Page {page} of {totalPages} • Showing {paginatedChallenges.length} of {filteredChallenges.length} challenges
+          </p>
+
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => setPage((current) => Math.max(1, current - 1))}
+              disabled={page === 1}
+              aria-label="Previous challenges page"
+              title="Previous challenges page"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/70 text-foreground disabled:opacity-45"
+            >
+              <PaginationArrow direction="left" />
+            </button>
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                type="button"
+                onClick={() => setPage(pageNumber)}
+                className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                  pageNumber === page
+                    ? "bg-accent text-white"
+                    : "border border-border bg-background/70 text-foreground"
+                }`}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+              disabled={page === totalPages}
+              aria-label="Next challenges page"
+              title="Next challenges page"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/70 text-foreground disabled:opacity-45"
+            >
+              <PaginationArrow direction="right" />
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {filteredChallenges.length === 0 ? (
         <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5 text-sm leading-7 text-muted">

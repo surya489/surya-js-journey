@@ -2,12 +2,81 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import type { EventLoopScenario } from "@/types/visualizer";
 
 type EventLoopVisualizerProps = {
   scenarios: EventLoopScenario[];
   defaultScenarioSlug?: string;
 };
+
+function ControlIcon({
+  kind,
+}: {
+  kind: "play" | "pause" | "previous" | "next" | "reset";
+}) {
+  if (kind === "play") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+        <path d="M7 5.5v13l10-6.5-10-6.5Z" />
+      </svg>
+    );
+  }
+
+  if (kind === "pause") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+        <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
+      </svg>
+    );
+  }
+
+  if (kind === "previous") {
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4 fill-none stroke-current"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M18 6 10 12l8 6" />
+        <path d="M6 6v12" />
+      </svg>
+    );
+  }
+
+  if (kind === "next") {
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4 fill-none stroke-current"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m6 6 8 6-8 6" />
+        <path d="M18 6v12" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4 fill-none stroke-current"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20 11a8 8 0 1 0 2 5.3" />
+      <path d="M20 4v7h-7" />
+    </svg>
+  );
+}
 
 function QueuePanel({
   title,
@@ -71,6 +140,10 @@ export function EventLoopVisualizer({
 
   const snapshot = scenario.snapshots[stepIndex];
   const metrics = useMemo(() => getScenarioMetrics(scenario), [scenario]);
+  const scenarioOptions = scenarios.map((item) => ({
+    label: item.title,
+    value: item.slug,
+  }));
 
   useEffect(() => {
     if (!isPlaying) {
@@ -121,7 +194,7 @@ export function EventLoopVisualizer({
   return (
     <div className="space-y-6">
       <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
               Scenario
@@ -136,17 +209,14 @@ export function EventLoopVisualizer({
 
           <label className="block text-sm font-semibold text-foreground">
             Scenario picker
-            <select
-              value={scenario.slug}
-              onChange={(event) => handleScenarioChange(event.target.value)}
-              className="mt-3 w-full min-w-64 rounded-[1rem] border border-border bg-background/70 px-4 py-3 text-sm font-medium outline-none xl:w-auto"
-            >
-              {scenarios.map((item) => (
-                <option key={item.slug} value={item.slug}>
-                  {item.title}
-                </option>
-              ))}
-            </select>
+            <div className="mt-3 w-full sm:max-w-sm lg:min-w-64">
+              <CustomSelect
+                value={scenario.slug}
+                onChange={handleScenarioChange}
+                options={scenarioOptions}
+                ariaLabel="Select visualizer scenario"
+              />
+            </div>
           </label>
         </div>
 
@@ -171,14 +241,14 @@ export function EventLoopVisualizer({
           <span>{scenario.slug}.js</span>
           <span>Scenario code</span>
         </div>
-        <pre className="overflow-x-auto px-4 py-5 text-sm leading-7">
-          <code>{scenario.code}</code>
+        <pre className="overflow-x-auto px-4 py-5 text-sm leading-6">
+          <code>{scenario.code.trim()}</code>
         </pre>
       </div>
 
       <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-          <div>
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+          <div className="min-w-0">
             <p className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
               Current Step
             </p>
@@ -190,37 +260,47 @@ export function EventLoopVisualizer({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="overlay-surface rounded-[1.2rem] border border-border p-2.5">
+            <div className="flex flex-wrap gap-2 lg:justify-end">
             <button
               type="button"
               onClick={handlePlayPause}
-              className="rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors"
+              aria-label={isPlaying ? "Pause autoplay" : "Play autoplay"}
+              title={isPlaying ? "Pause autoplay" : "Play autoplay"}
+              className="overlay-surface-strong inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent/30"
             >
-              {isPlaying ? "Pause" : "Play"}
+              <ControlIcon kind={isPlaying ? "pause" : "play"} />
             </button>
             <button
               type="button"
               onClick={handlePrev}
-              disabled={stepIndex === 0}
-              className="rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors disabled:opacity-50"
+              disabled={stepIndex === 0 || isPlaying}
+              aria-label="Previous step"
+              title="Previous step"
+              className="overlay-surface-strong inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent/30 disabled:opacity-50"
             >
-              Previous
+              <ControlIcon kind="previous" />
             </button>
             <button
               type="button"
               onClick={handleNext}
               disabled={stepIndex === scenario.snapshots.length - 1 || isPlaying}
-              className="rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-50"
+              aria-label="Next step"
+              title="Next step"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent text-white transition-colors disabled:opacity-50"
             >
-              Next
+              <ControlIcon kind="next" />
             </button>
             <button
               type="button"
               onClick={handleReset}
-              className="rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors"
+              aria-label="Reset visualizer"
+              title="Reset visualizer"
+              className="overlay-surface-strong inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent/30"
             >
-              Reset
+              <ControlIcon kind="reset" />
             </button>
+            </div>
           </div>
         </div>
 
@@ -234,7 +314,7 @@ export function EventLoopVisualizer({
         </div>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-3">
+      <div className="grid gap-5 lg:grid-cols-3">
         <QueuePanel title="Call Stack" items={snapshot.activeCallStack} />
         <QueuePanel title="Microtask Queue" items={snapshot.microtaskQueue} />
         <QueuePanel title="Macrotask Queue" items={snapshot.macrotaskQueue} />
@@ -271,7 +351,7 @@ export function EventLoopVisualizer({
           <span>Console Output</span>
           <span>{snapshot.consoleOutput.length} lines</span>
         </div>
-        <pre className="min-h-40 overflow-x-auto px-4 py-5 text-sm leading-7">
+        <pre className="min-h-40 overflow-x-auto px-4 py-5 text-sm leading-6">
           <code>
             {snapshot.consoleOutput.length > 0
               ? snapshot.consoleOutput.join("\n")

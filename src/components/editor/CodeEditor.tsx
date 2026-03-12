@@ -19,16 +19,22 @@ export function CodeEditor({
   onChange,
   title = "editor.js",
 }: CodeEditorProps) {
+  const editorHeight = useMemo(() => {
+    const lines = Math.max(code.split("\n").length, 6);
+    return `${Math.min(Math.max(lines * 24 + 48, 220), 340)}px`;
+  }, [code]);
+
   const options = useMemo(
     () => ({
       minimap: { enabled: false },
       fontSize: 14,
+      lineHeight: 22,
       wordWrap: "on" as const,
       scrollBeyondLastLine: false,
       lineNumbersMinChars: 3,
       roundedSelection: false,
       automaticLayout: true,
-      padding: { top: 20, bottom: 20 },
+      padding: { top: 10, bottom: 10 },
       overviewRulerBorder: false,
       quickSuggestions: {
         other: true,
@@ -46,16 +52,16 @@ export function CodeEditor({
 
   return (
     <div className="overflow-hidden rounded-[1.5rem] border border-stone-900/10 bg-stone-950 text-stone-100">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-3 text-xs text-stone-400">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-3 text-[11px] text-stone-400 sm:gap-3 sm:px-4 sm:text-xs">
         <span>{title}</span>
         <div className="flex items-center gap-3">
           <span>{code.split("\n").length} lines</span>
           <span>Monaco Editor</span>
         </div>
       </div>
-      <div className="min-h-80">
+      <div className="min-h-56">
         <Editor
-          height="420px"
+          height={editorHeight}
           defaultLanguage="javascript"
           language="javascript"
           value={code}

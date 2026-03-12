@@ -35,7 +35,7 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
             <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
               Challenge
             </span>
-            <span className="rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-background">
+            <span className="rounded-full bg-surface-strong px-3 py-1 text-xs font-semibold text-foreground">
               {challenge.difficulty}
             </span>
             <span className="rounded-full bg-background px-3 py-1 text-xs font-semibold text-muted">
@@ -43,7 +43,7 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
             </span>
           </div>
           <div>
-            <h2 className="text-4xl font-black tracking-tight text-foreground">
+            <h2 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
               {challenge.title}
             </h2>
             <p className="mt-3 max-w-3xl text-lg leading-8 text-foreground/80">
@@ -55,7 +55,7 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
+        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-6">
             <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
               <p className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">

@@ -17,17 +17,17 @@ export function OutputConsole({ output, error }: OutputConsoleProps) {
 
   return (
     <div className="overflow-hidden rounded-[1.5rem] border border-stone-900/10 bg-stone-950 text-stone-100">
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-xs text-stone-400">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-3 text-[11px] text-stone-400 sm:px-4 sm:text-xs">
         <span>Console</span>
         <span>{error ? "Runtime error" : `${output.length} entries`}</span>
       </div>
-      <div className="min-h-40 overflow-x-auto px-4 py-5">
+      <div className="min-h-28 overflow-x-auto px-4 py-4">
         {lines.length > 0 ? (
-          <div className="space-y-3 font-mono text-sm leading-7">
+          <div className="space-y-3 font-mono text-sm leading-6">
             {lines.map((line, index) => (
               <div
                 key={`${line.type}-${line.message}-${index}`}
-                className="grid grid-cols-[72px_minmax(0,1fr)] gap-4"
+                className="grid gap-1 sm:grid-cols-[72px_minmax(0,1fr)] sm:gap-4"
               >
                 <span
                   className={`text-xs font-semibold uppercase tracking-[0.18em] ${
@@ -55,7 +55,7 @@ export function OutputConsole({ output, error }: OutputConsoleProps) {
             ))}
           </div>
         ) : (
-          <p className="font-mono text-sm leading-7 text-stone-400">
+          <p className="font-mono text-sm leading-6 text-stone-400">
             Run the code to see output here.
           </p>
         )}

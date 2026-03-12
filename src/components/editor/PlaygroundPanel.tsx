@@ -80,7 +80,7 @@ export function PlaygroundPanel({
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState<ConsoleEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [copyLabel, setCopyLabel] = useState("Copy Code");
+  const [copyLabel, setCopyLabel] = useState("Copy");
   const [resetLabel, setResetLabel] = useState("Reset");
   const [validationState, setValidationState] = useState<
     "idle" | "passed" | "failed"
@@ -108,7 +108,7 @@ export function PlaygroundPanel({
     setCode(initialCode);
     setOutput([]);
     setError(null);
-    setCopyLabel("Copy Code");
+    setCopyLabel("Copy");
     setResetLabel("Reset");
     setValidationState("idle");
   }, [initialCode]);
@@ -118,7 +118,7 @@ export function PlaygroundPanel({
       return;
     }
 
-    const timeout = window.setTimeout(() => setCopyLabel("Copy Code"), 1500);
+    const timeout = window.setTimeout(() => setCopyLabel("Copy"), 1500);
     return () => window.clearTimeout(timeout);
   }, [copyLabel]);
 
@@ -180,32 +180,65 @@ export function PlaygroundPanel({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="rounded-[1.4rem] border border-border bg-surface-strong p-4 sm:p-5 md:rounded-[1.6rem] md:p-6">
+        <div className="space-y-5">
           <div>
             <p className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
               {mode === "challenge" ? "Challenge Workspace" : "Practice Workspace"}
             </p>
-            <h3 className="mt-2 text-xl font-bold text-foreground">{title}</h3>
-            <p className="mt-2 text-sm leading-7 text-muted">
+            <h3 className="mt-2 text-2xl font-bold text-foreground">{title}</h3>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
               Edit the code, run it in the browser, and inspect the console
               output below. Reset restores the original snippet for this page.
             </p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-[repeat(3,minmax(0,170px))]">
+              <div className="rounded-[1rem] bg-background/65 px-4 py-3">
+                <p className="text-xs font-semibold tracking-[0.16em] text-accent uppercase">
+                  Editor
+                </p>
+                <p className="mt-2 text-lg font-bold text-foreground">
+                  {code.split("\n").length} lines
+                </p>
+              </div>
+              <div className="rounded-[1rem] bg-background/65 px-4 py-3">
+                <p className="text-xs font-semibold tracking-[0.16em] text-accent uppercase">
+                  Output
+                </p>
+                <p className="mt-2 text-lg font-bold text-foreground">
+                  {output.length} entries
+                </p>
+              </div>
+              <div className="rounded-[1rem] bg-background/65 px-4 py-3">
+                <p className="text-xs font-semibold tracking-[0.16em] text-accent uppercase">
+                  Mode
+                </p>
+                <p className="mt-2 text-lg font-bold capitalize text-foreground">{mode}</p>
+              </div>
+            </div>
           </div>
 
-          <div className="grid gap-3 rounded-[1.25rem] border border-border bg-background/60 px-4 py-4 text-sm text-muted">
-            <p>
-              <span className="font-semibold text-foreground">{code.split("\n").length}</span>{" "}
-              lines in editor
-            </p>
-            <p>
-              <span className="font-semibold text-foreground">{output.length}</span>{" "}
-              console entries
-            </p>
-            <p>
-              Mode:{" "}
-              <span className="font-semibold text-foreground capitalize">{mode}</span>
-            </p>
+          <div className="hero-surface-soft rounded-[1.2rem] border border-border px-4 py-4 text-sm text-muted shadow-[0_14px_30px_rgba(88,63,24,0.06)] md:rounded-[1.35rem] md:px-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-xl">
+                <p className="text-xs font-semibold tracking-[0.2em] text-accent uppercase">
+                  Workspace Notes
+                </p>
+                <p className="mt-2 leading-7">
+                  Changes stay local until you run the code. Reset restores the original snippet immediately for another pass.
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:w-[22rem] lg:max-w-[22rem]">
+                <div className="overlay-surface-strong rounded-[0.95rem] px-4 py-3">
+                  <p className="font-semibold text-foreground">Live editing</p>
+                  <p className="mt-1 leading-6">Safe to change before every run.</p>
+                </div>
+                <div className="overlay-surface-strong rounded-[0.95rem] px-4 py-3">
+                  <p className="font-semibold text-foreground">Fast reset</p>
+                  <p className="mt-1 leading-6">Return to the original starter instantly.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -249,7 +282,7 @@ export function PlaygroundPanel({
 
           {validationState !== "idle" ? (
             <div className="mt-5 overflow-hidden rounded-[1.25rem] border border-border bg-background/60">
-              <div className="grid grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)] border-b border-border bg-background/80 px-4 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+              <div className="grid grid-cols-[52px_minmax(0,1fr)_minmax(0,1fr)] border-b border-border bg-background/80 px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted sm:grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)] sm:px-4 sm:text-xs sm:tracking-[0.18em]">
                 <span>Line</span>
                 <span>Expected</span>
                 <span>Actual</span>
@@ -258,7 +291,7 @@ export function PlaygroundPanel({
                 {comparisonRows.map((row) => (
                   <div
                     key={`${row.index}-${row.expectedLine}-${row.actualLine}`}
-                    className={`grid grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)] gap-4 px-4 py-3 text-sm ${
+                    className={`grid grid-cols-[52px_minmax(0,1fr)_minmax(0,1fr)] gap-3 px-3 py-3 text-sm sm:grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)] sm:gap-4 sm:px-4 ${
                       row.matched ? "bg-emerald-500/5" : "bg-rose-500/5"
                     }`}
                   >
@@ -282,7 +315,7 @@ export function PlaygroundPanel({
           <p className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
             Expected Output
           </p>
-          <pre className="mt-4 overflow-x-auto rounded-[1.25rem] border border-stone-900/10 bg-stone-950 px-4 py-5 text-sm leading-7 text-stone-100">
+          <pre className="mt-4 overflow-x-auto rounded-[1.25rem] border border-stone-900/10 bg-stone-950 px-4 py-4 text-sm leading-6 text-stone-100">
             <code>{expected}</code>
           </pre>
         </div>
