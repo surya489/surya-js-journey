@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -26,7 +27,9 @@ export function LayoutWrapper({ concepts, children }: LayoutWrapperProps) {
 
   return (
     <main className="min-h-screen px-3 py-4 sm:px-4 sm:py-5 md:px-6 md:py-6 xl:px-8 xl:py-8">
-      <SmoothNavigation />
+      <Suspense fallback={null}>
+        <SmoothNavigation />
+      </Suspense>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
         <Navbar
           concepts={concepts}
