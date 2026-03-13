@@ -2,6 +2,7 @@ import { ChallengeSearch } from "@/components/challenge/ChallengeSearch";
 import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
 import { getAllChallenges } from "@/lib/challenges";
 import { getAllConcepts } from "@/lib/concepts";
+import { Reveal } from "@/components/layout/Reveal";
 
 export default function ChallengesPage() {
   const concepts = getAllConcepts();
@@ -10,6 +11,7 @@ export default function ChallengesPage() {
   return (
     <LayoutWrapper concepts={concepts}>
       <div className="space-y-8">
+        <Reveal>
         <div className="max-w-4xl">
           <p className="text-xs font-semibold tracking-[0.24em] text-accent uppercase">
             Challenges
@@ -23,7 +25,9 @@ export default function ChallengesPage() {
             outcome so you can practice deliberately.
           </p>
         </div>
+      </Reveal>
 
+      <Reveal delay={80}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-[1.25rem] border border-border bg-surface-strong p-4">
             <p className="text-sm font-semibold text-foreground">Total Challenges</p>
@@ -42,8 +46,11 @@ export default function ChallengesPage() {
             </p>
           </div>
         </div>
+      </Reveal>
 
+      <Reveal delay={140}>
         <ChallengeSearch challenges={challenges} />
+      </Reveal>
       </div>
     </LayoutWrapper>
   );

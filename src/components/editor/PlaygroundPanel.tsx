@@ -6,6 +6,7 @@ import { CodeEditor } from "@/components/editor/CodeEditor";
 import type { ConsoleEntry } from "@/components/editor/OutputConsole";
 import { OutputConsole } from "@/components/editor/OutputConsole";
 import { RunButton } from "@/components/editor/RunButton";
+import { Reveal } from "../layout/Reveal";
 
 type PlaygroundPanelProps = {
   initialCode: string;
@@ -180,6 +181,7 @@ export function PlaygroundPanel({
 
   return (
     <div className="space-y-5">
+      <Reveal delay={200}>
       <div className="rounded-[1.4rem] border border-border bg-surface-strong p-4 sm:p-5 md:rounded-[1.6rem] md:p-6">
         <div className="space-y-5">
           <div>
@@ -219,7 +221,7 @@ export function PlaygroundPanel({
           </div>
 
           <div className="hero-surface-soft rounded-[1.2rem] border border-border px-4 py-4 text-sm text-muted shadow-[0_14px_30px_rgba(88,63,24,0.06)] md:rounded-[1.35rem] md:px-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between flex-wrap">
               <div className="max-w-xl">
                 <p className="text-xs font-semibold tracking-[0.2em] text-accent uppercase">
                   Workspace Notes
@@ -228,7 +230,7 @@ export function PlaygroundPanel({
                   Changes stay local until you run the code. Reset restores the original snippet immediately for another pass.
                 </p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2 lg:w-[22rem] lg:max-w-[22rem]">
+              <div className="grid gap-3 sm:grid-cols-2">
                 <div className="overlay-surface-strong rounded-[0.95rem] px-4 py-3">
                   <p className="font-semibold text-foreground">Live editing</p>
                   <p className="mt-1 leading-6">Safe to change before every run.</p>
@@ -242,6 +244,7 @@ export function PlaygroundPanel({
           </div>
         </div>
       </div>
+      </Reveal>
 
       <CodeEditor code={code} onChange={setCode} title={title} />
       <RunButton

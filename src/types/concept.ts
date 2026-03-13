@@ -1,10 +1,13 @@
 export type ConceptDifficulty = "Beginner" | "Intermediate" | "Advanced";
 
 export type ConceptCategory =
+  | "Core JavaScript"
   | "Functions"
   | "Async JavaScript"
   | "Browser Internals"
-  | "Performance";
+  | "Performance"
+  | "Data Handling"
+  | "Browser Events";
 
 export type Concept = {
   slug: string;

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ChallengeCard } from "@/components/challenge/ChallengeCard";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import type { Challenge } from "@/types/challenge";
+import { Reveal } from "../layout/Reveal";
 
 type ChallengeSearchProps = {
   challenges: Challenge[];
@@ -29,6 +30,22 @@ function PaginationArrow({ direction }: { direction: "left" | "right" }) {
       )}
     </svg>
   );
+}
+
+function getVisiblePages(currentPage: number, totalPages: number) {
+  if (totalPages <= 5) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (currentPage <= 3) {
+    return [1, 2, 3, "...", totalPages];
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [1, "...", totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [1, "...", currentPage, "...", totalPages];
 }
 
 export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
@@ -62,6 +79,10 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
     const start = (page - 1) * PAGE_SIZE;
     return filteredChallenges.slice(start, start + PAGE_SIZE);
   }, [filteredChallenges, page]);
+  const visiblePages = useMemo(
+    () => getVisiblePages(page, totalPages),
+    [page, totalPages],
+  );
 
   const difficultyOptions = [
     { label: "All", value: "All" },
@@ -72,6 +93,7 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
 
   return (
     <div className="space-y-5">
+      <Reveal delay={200}>
       <div className="rounded-[1.5rem] border border-border bg-surface-strong p-5">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
           <label className="block">
@@ -119,8 +141,10 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
           Showing {filteredChallenges.length} of {challenges.length} challenges
         </p>
       </div>
+      </Reveal>
 
       {filteredChallenges.length > 0 ? (
+        <Reveal delay={260}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-[1.25rem] border border-border bg-surface-strong p-4">
             <p className="text-sm font-semibold text-foreground">Visible Challenges</p>
@@ -142,13 +166,16 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
             </p>
           </div>
         </div>
+        </Reveal>
       ) : null}
 
+      <Reveal delay={320}>
       <div className="grid gap-5 lg:grid-cols-2">
         {paginatedChallenges.map((challenge) => (
           <ChallengeCard key={challenge.slug} challenge={challenge} />
         ))}
       </div>
+      </Reveal>
 
       {filteredChallenges.length > 0 ? (
         <div className="flex flex-col gap-4 rounded-[1.5rem] border border-border bg-surface-strong p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -167,20 +194,29 @@ export function ChallengeSearch({ challenges }: ChallengeSearchProps) {
             >
               <PaginationArrow direction="left" />
             </button>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-              <button
-                key={pageNumber}
-                type="button"
-                onClick={() => setPage(pageNumber)}
-                className={`rounded-full px-4 py-2 text-sm font-semibold ${
-                  pageNumber === page
-                    ? "bg-accent text-white"
-                    : "border border-border bg-background/70 text-foreground"
-                }`}
-              >
-                {pageNumber}
-              </button>
-            ))}
+            {visiblePages.map((pageItem, index) =>
+              pageItem === "..." ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-border bg-background/45 px-3 text-sm font-semibold text-muted"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={pageItem}
+                  type="button"
+                  onClick={() => setPage(Number(pageItem))}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                    pageItem === page
+                      ? "bg-accent text-white"
+                      : "border border-border bg-background/70 text-foreground"
+                  }`}
+                >
+                  {pageItem}
+                </button>
+              ),
+            )}
             <button
               type="button"
               onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
